@@ -1,29 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_0fr9mxs" targetNamespace="http://bpmn.io/schema/bpmn">
-  <bpmn:process id="video_request-process" isExecutable="true" camunda:historyTimeToLive="180">
-    <bpmn:startEvent id="StartEvent_1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_0fr9mxs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.19.0">
+  <bpmn:process id="video_request-process" name="YouTube Video Requester" isExecutable="true" camunda:versionTag="0.0.1" camunda:historyTimeToLive="180">
+    <bpmn:extensionElements>
+      <camunda:properties>
+        <camunda:property name="keyword" value="Klimawandel" />
+      </camunda:properties>
+    </bpmn:extensionElements>
+    <bpmn:startEvent id="StartEvent_1" name="Receive request">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="searchterm" label="Suchbegriff" type="string" defaultValue="Klimawandel" />
+        </camunda:formData>
+      </bpmn:extensionElements>
       <bpmn:outgoing>SequenceFlow_1fp17al</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_1fp17al" sourceRef="StartEvent_1" targetRef="say-hello" />
-    <bpmn:endEvent id="EndEvent_0x6ir2l">
-      <bpmn:incoming>SequenceFlow_16gzt2m</bpmn:incoming>
+    <bpmn:sequenceFlow id="SequenceFlow_1fp17al" sourceRef="StartEvent_1" targetRef="call-yt-api" />
+    <bpmn:endEvent id="EndEvent_0x6ir2l" name="Finished request">
+      <bpmn:incoming>Flow_048bzj6</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_16gzt2m" sourceRef="say-hello" targetRef="EndEvent_0x6ir2l" />
-    <bpmn:userTask id="say-hello" name="Say hello to&#10;demo" camunda:candidateUsers="demo">
+    <bpmn:sequenceFlow id="SequenceFlow_16gzt2m" sourceRef="call-yt-api" targetRef="persist_response" />
+    <bpmn:serviceTask id="call-yt-api" name="Call YT API for videos">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Accept">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="method">GET</camunda:inputParameter>
+            <camunda:inputParameter name="url">https://youtube.googleapis.com/youtube/v3/search?part=snippet&amp;q=Klimawandel&amp;key=AIzaSyB99Lqjk9z18wSFKsktjcD3b-8fkD2S8jo</camunda:inputParameter>
+            <camunda:outputParameter name="items">${S(response).prop("items")}</camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1fp17al</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_16gzt2m</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_048bzj6" sourceRef="user-response" targetRef="EndEvent_0x6ir2l" />
+    <bpmn:userTask id="user-response" name="Wait for response" camunda:formRef="finish-form" camunda:formRefBinding="deployment">
+      <bpmn:incoming>Flow_0twgofc</bpmn:incoming>
+      <bpmn:outgoing>Flow_048bzj6</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0twgofc" sourceRef="persist_response" targetRef="user-response" />
+    <bpmn:serviceTask id="persist_response" name="Persist response" camunda:delegateExpression="${videoDelegate}">
+      <bpmn:incoming>SequenceFlow_16gzt2m</bpmn:incoming>
+      <bpmn:outgoing>Flow_0twgofc</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="video_request-process">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="157" y="142" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1xna69d_di" bpmnElement="call-yt-api">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_0x6ir2l_di" bpmnElement="EndEvent_0x6ir2l">
-        <dc:Bounds x="432" y="99" width="36" height="36" />
+        <dc:Bounds x="762" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="739" y="142" width="82" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="UserTask_08mft2c_di" bpmnElement="say-hello">
-        <dc:Bounds x="270" y="77" width="100" height="80" />
+      <bpmndi:BPMNShape id="Activity_127bsgy_di" bpmnElement="user-response">
+        <dc:Bounds x="600" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0k5xqgn_di" bpmnElement="persist_response">
+        <dc:Bounds x="430" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1fp17al_di" bpmnElement="SequenceFlow_1fp17al">
         <di:waypoint x="215" y="117" />
@@ -31,7 +78,15 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_16gzt2m_di" bpmnElement="SequenceFlow_16gzt2m">
         <di:waypoint x="370" y="117" />
-        <di:waypoint x="432" y="117" />
+        <di:waypoint x="430" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_048bzj6_di" bpmnElement="Flow_048bzj6">
+        <di:waypoint x="700" y="117" />
+        <di:waypoint x="762" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0twgofc_di" bpmnElement="Flow_0twgofc">
+        <di:waypoint x="530" y="117" />
+        <di:waypoint x="600" y="117" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

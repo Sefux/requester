@@ -1,0 +1,24 @@
+{
+  "components": [
+    {
+      "label": "Text field",
+      "type": "textfield",
+      "layout": {
+        "row": "Row_0w6oh5p",
+        "columns": null
+      },
+      "id": "Field_1ehfjwa",
+      "key": "import_date",
+      "description": "Import datum"
+    }
+  ],
+  "type": "default",
+  "id": "finish-form",
+  "exporter": {
+    "name": "Camunda Modeler",
+    "version": "5.19.0"
+  },
+  "executionPlatform": "Camunda Platform",
+  "executionPlatformVersion": "7.20.0",
+  "schemaVersion": 14
+}

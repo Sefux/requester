@@ -31,3 +31,32 @@ https://github.com/camunda/camunda-bpm-examples
 
 * Camunda BPMN Examples - REST Service Task
 https://github.com/camunda/camunda-bpm-examples/tree/master/servicetask/rest-service
+
+
+## Snippets
+
+### Connector output
+
+```java
+import static org.camunda.spin.Spin.*;
+import static org.camunda.spin.DataFormats.*;
+
+import com.gpe_learn.video_request.model.Video;
+import com.gpe_learn.video_request.repository.VideoRepository;
+
+
+SpinJsonNode json = S(response, json());
+SpinList items = json.prop("items").elements();
+
+List<Video> videos = new ArrayList<>();
+VideoRepository videoRepository = new VideoRepository();
+			
+items.forEach(videoJson -> {
+  Video video = new Video(videoJson.prop("snippet").prop("title"), videoJson.prop("id").prop("videoId"))
+  videos.add(video);
+});
+
+videoRepository.saveAll(videos);
+
+// Customer customer = JSON("{\"customer\": \"Kermit\"}").mapTo(Customer.class);
+```

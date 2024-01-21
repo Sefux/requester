@@ -12,8 +12,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.event.EventListener;
 
 
-//import com.gpe_learn.video_request.model.Video;
-//import com.gpe_learn.video_request.repository.VideoRepository;
+// import com.gpe_learn.video_request.model.Video;
+// import com.gpe_learn.video_request.repository.VideoRepository;
 
 @SpringBootApplication
 @EnableProcessApplication
@@ -31,6 +31,16 @@ public class Application {
   public void processPostDeploy(PostDeployEvent event) {
     runtimeService.startProcessInstanceByKey("video_request-process");
   }
+
+  // 	@Bean
+	// CommandLineRunner commandLineRunner(VideoRepository videoRepository) {
+	// 	return args -> {
+	// 		List<Video> videos = List.of(new Video( "Video1", "https://yt.com/1"), new Video("Titel 2", "https://yt.com/2"));
+	// 		videoRepository.saveAll(videos);
+
+	// 		videoRepository.findAll().stream().forEach(System.out::println);
+	// 	};
+	// }
 
 
 }

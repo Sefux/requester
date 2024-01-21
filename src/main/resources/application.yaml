@@ -7,3 +7,5 @@ spring.h2.console.enabled: true
 camunda.bpm.admin-user:
   id: demo
   password: demo
+
+api-key: AIzaSyB99Lqjk9z18wSFKsktjcD3b-8fkD2S8jo
