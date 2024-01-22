@@ -108,6 +108,14 @@
       <version>23.1.2</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-jsr223</artifactId>
+      <version>3.0.20</version>
+      <scope>runtime</scope>
+    </dependency>
+
+
   </dependencies>
 
   <build>
