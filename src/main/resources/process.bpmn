@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_0fr9mxs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.19.0">
   <bpmn:process id="video_request-process" name="YouTube Video Requester" isExecutable="true" camunda:versionTag="0.0.1" camunda:historyTimeToLive="180">
-    <bpmn:extensionElements>
-      <camunda:properties>
-        <camunda:property name="keyword" value="Klimawandel" />
-      </camunda:properties>
-    </bpmn:extensionElements>
     <bpmn:startEvent id="StartEvent_1" name="Receive request">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="searchterm" label="Suchbegriff" type="string" defaultValue="Klimawandel" />
+          <camunda:formField id="searchTerm" label="Suchbegriff" type="string" defaultValue="Klimawandel" />
+          <camunda:formField id="maxResults" label="Anzahl Ergebnisse" type="string" defaultValue="5" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:outgoing>SequenceFlow_1fp17al</bpmn:outgoing>
@@ -29,7 +25,7 @@
               </camunda:map>
             </camunda:inputParameter>
             <camunda:inputParameter name="method">GET</camunda:inputParameter>
-            <camunda:inputParameter name="url">https://youtube.googleapis.com/youtube/v3/search?part=snippet&amp;q=Klimawandel&amp;key=AIzaSyB99Lqjk9z18wSFKsktjcD3b-8fkD2S8jo</camunda:inputParameter>
+            <camunda:inputParameter name="url">https://youtube.googleapis.com/youtube/v3/search?part=snippet&amp;q=${searchTerm}&amp;maxResults=${maxResults}&amp;key=AIzaSyB99Lqjk9z18wSFKsktjcD3b-8fkD2S8jo</camunda:inputParameter>
             <camunda:outputParameter name="items">${S(response).prop("items")}</camunda:outputParameter>
           </camunda:inputOutput>
           <camunda:connectorId>http-connector</camunda:connectorId>
