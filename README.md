@@ -4,13 +4,40 @@
 
 * Camunda als Workflow Engine nutzen
 * Abfrage eines Webservice und Verarbeiten der Ergebnisse
+  * Videos über die Youtube API abrufen zur Thematik "Klimawandel"
 * Webservice definieren um den Prozess wiederholbar auszuführen
 
-### Schritte
+### Überlegungen / Schritte
 
-* Webservice nach Schlagwort abfragen
-* Ergebniss parsen => Link / etc speichern
-* Liste ausgeben
+* API Abfrage aufnahmen
+  * Wann wurde die letzte Abfrage gestellt? Wiederholbare Abfragen?
+  * Mit welchen Parametern? Welche Informationen sollen abgefragt werden?
+    * Welche Felder (snippet/title)
+  * Welche Möglichkeiten bietet die API/Dataset?
+    * Pagination
+    * Captions/Untertitel
+    * Kommentare
+* Webservice API abfragen / Parameter: Schlagwort, Anzahl Ergebnisse, Sortierung
+  * Batch Verarbeitung
+  * Scheduled Prozess
+  * Indexer Job archivieren / speichern
+* Ergebniss parsen & Daten (Link, etc) speichern
+  * Daten Definition: Welche Informationen sollen gespeichert werden
+  * Persistenz herstellen:
+    * Relationale Datenbank
+    * Solr / Lucene / ElasticSearch
+  * Keinen Doubletten aufnehmen
+* GUI für Anzeige der Ergebnisse / Liste ausgeben
+  * 
+
+
+### Vorgehen
+
+* Spring Boot Projekt eingerichtet (requester)
+* Camunda als Dependency eingebunden
+* BMPN Prozess definiert (process.bmpn)
+
+
 
 
 ## Resourcen 
@@ -92,6 +119,9 @@ https://start.camunda.com/
 
 * Spring Initializr
 https://start.spring.io/
+
+* H2 Database Interface
+http://localhost:8080/h2-console/
 
 
 
