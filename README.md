@@ -1,43 +1,66 @@
-# Case Study - Green Planet Energy
+# Case Study - GPE
 
 ## Aufgabe
 
 * Camunda als Workflow Engine nutzen
-* Abfrage eines Webservice und Verarbeiten der Ergebnisse
+* Abfrage eines Webservice und Verarbeitung der Ergebnisse
   * Videos über die Youtube API abrufen zur Thematik "Klimawandel"
 * Webservice definieren um den Prozess wiederholbar auszuführen
 
-### Überlegungen / Schritte
+### Vorgehen
 
-* API Abfrage aufnahmen
+* Spring Boot Projekt eingerichtet (requester)
+* Camunda 7.20 als Dependency eingebunden
+* BMPN Prozesse definiert
+  I. (process.bmpn): http-Connector über BMPN Notation eingebunden. Connector Rückgabe Wert wird per Java-Delegate in die Datenbank geschrieben
+![Grafik process.bmpn](docs/images/bmpn_process_1.png?raw=true)
+  II. (process_yt_batch.bmpn): Über ein Eingabeformular und 2 Java-Delegate Klassen werden beliebig viele API-Calls ausgeführt. Dadurch kann der API Pagination Parameter "nextPage" genutzt werden. Datensätze werden in einer Datenbnak gespeichert.
+![Grafik process_yt_batch.bmpn](docs/images/bmpn_process_2.png?raw=true)
+
+
+### Weiterführende Überlegungen / Weitere Annahmen
+
+* API Abfrage
   * Wann wurde die letzte Abfrage gestellt? Wiederholbare Abfragen?
   * Mit welchen Parametern? Welche Informationen sollen abgefragt werden?
-    * Welche Felder (snippet/title)
+    * Welche Felder (snippet/title) werden untersucht?
   * Welche Möglichkeiten bietet die API/Dataset?
     * Pagination
     * Captions/Untertitel
     * Kommentare
-* Webservice API abfragen / Parameter: Schlagwort, Anzahl Ergebnisse, Sortierung
-  * Batch Verarbeitung
-  * Scheduled Prozess
-  * Indexer Job archivieren / speichern
-* Ergebniss parsen & Daten (Link, etc) speichern
-  * Daten Definition: Welche Informationen sollen gespeichert werden
+  * Webservice API abfragen / Parameter: Schlagwort, Anzahl Ergebnisse, Sortierung
+    * Batch Verarbeitung
+    * Scheduled Prozess
+    * Indexer Job archivieren / speichern
+* Ergebniss parsen & Daten speichern
+  * Daten Definition: Welche Informationen sollen gespeichert werden?
   * Persistenz herstellen:
     * Relationale Datenbank
     * Solr / Lucene / ElasticSearch
   * Keinen Doubletten aufnehmen
 * GUI für Anzeige der Ergebnisse / Liste ausgeben
-  * 
+* Tests schreiben
 
 
-### Vorgehen
+### Anforderungen
 
-* Spring Boot Projekt eingerichtet (requester)
-* Camunda als Dependency eingebunden
-* BMPN Prozess definiert (process.bmpn)
+* Java 17
+* Camunda 7.20
+* Maven 3.9.6
 
+### Installation
 
+```
+git clone git@github.com:Sefux/requester.git
+```
+
+```
+mvn compile
+```
+
+```
+mvn spring-boot:run
+```
 
 
 ## Resourcen 
@@ -125,45 +148,3 @@ http://localhost:8080/h2-console/
 
 
 
-
-## Snippets
-
-### Connector output
-
-* Convert SpinlIst to JavaList
-https://forum.camunda.io/t/convert-spinlist-to-java-list-in-expression/20031
-
-```java
-import static org.camunda.spin.Spin.*;
-import static org.camunda.spin.DataFormats.*;
-
-import com.gpe_learn.video_request.model.Video;
-import com.gpe_learn.video_request.repository.VideoRepository;
-
-
-SpinJsonNode json = S(response, json());
-SpinList items = json.prop("items").elements();
-
-List<Video> videos = new ArrayList<>();
-VideoRepository videoRepository = new VideoRepository();
-			
-items.forEach(videoJson -> {
-  Video video = new Video(videoJson.prop("snippet").prop("title"), videoJson.prop("id").prop("videoId"))
-  videos.add(video);
-});
-
-videoRepository.saveAll(videos);
-
-// Customer customer = JSON("{\"customer\": \"Kermit\"}").mapTo(Customer.class);
-```
-
-```Java
-import static org.camunda.spin.Spin.*;
-
-SpinJsonNode json = JSON(response).prop("items");
-
-List<com.gpe_learn.video_request.model.Video> videos = JSON(response).mapTo("java.util.ArrayList<com.gpe_learn.video_request.model.Video>");
-```
-
-* Data mapping and transformation (spin)
-https://camunda.com/blog/2015/02/data-mapping-and-transformation-with/
