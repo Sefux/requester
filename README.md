@@ -12,9 +12,13 @@
 * Spring Boot Projekt eingerichtet (requester)
 * Camunda 7.20 als Dependency eingebunden
 * BMPN Prozesse definiert
-  I. (process.bmpn): http-Connector über BMPN Notation eingebunden. Connector Rückgabe Wert wird per Java-Delegate in die Datenbank geschrieben
+
+  #### 1. YouTube Video Requester (process.bmpn)
+  Ein http-Connector wird per BMPN Notation eingebunden. Die API-Antworten werden per Java-Delegate in die Datenbank geschrieben
 ![Grafik process.bmpn](docs/images/bmpn_process_1.png?raw=true)
-  II. (process_yt_batch.bmpn): Über ein Eingabeformular und 2 Java-Delegate Klassen werden beliebig viele API-Calls ausgeführt. Dadurch kann der API Pagination Parameter "nextPage" genutzt werden. Datensätze werden in einer Datenbnak gespeichert.
+
+  #### 2. YouTube Video Requester Loop (process_yt_batch.bmpn)
+  Über ein Eingabeformular und 2 Java-Delegate Klassen werden beliebig viele API-Calls ausgeführt. Dadurch kann der API Pagination Parameter "nextPage" genutzt werden. Datensätze werden in einer Datenbnak gespeichert.
 ![Grafik process_yt_batch.bmpn](docs/images/bmpn_process_2.png?raw=true)
 
 
@@ -145,6 +149,3 @@ https://start.spring.io/
 
 * H2 Database Interface
 http://localhost:8080/h2-console/
-
-
-
