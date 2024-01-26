@@ -9,10 +9,9 @@ import com.gpe_learn.video_request.model.Video;
 import com.gpe_learn.video_request.repository.VideoRepository;
 import com.gpe_learn.video_request.exception.VideoDoesNotExistException;
 
-
 @Service
 public class VideoService {
-    
+
     private VideoRepository videoRepository;
 
     public List<Video> getAllVideos() {

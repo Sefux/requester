@@ -6,9 +6,12 @@ spring.jpa.generate-ddl: true
 spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
 spring.h2.console.enabled: true
 
+logging.level.org.springframework.web: debug
+logging.level.org.hibernate: error
+
 
 camunda.bpm.admin-user:
   id: demo
   password: demo
 
-api-key: AIzaSyB99Lqjk9z18wSFKsktjcD3b-8fkD2S8jo
+rest.apikey: AIzaSyB99Lqjk9z18wSFKsktjcD3b-8fkD2S8jo

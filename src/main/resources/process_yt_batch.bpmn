@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0fr9mxs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.19.0">
+  <bpmn:process id="video_request-loop" name="YouTube Video Requester Loop" isExecutable="true" camunda:versionTag="0.0.2" camunda:historyTimeToLive="180">
+    <bpmn:startEvent id="StartEvent_1" name="Receive request">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="searchTerm" label="Suchbegriff" type="string" defaultValue="Klimawandel" />
+          <camunda:formField id="maxResults" label="Anzahl Ergebnisse pro API Auruf" type="string" defaultValue="5" />
+          <camunda:formField id="maxApiCalls" label="Maximale Anzahl an API-Aufrufen" type="string" defaultValue="2" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>SequenceFlow_1fp17al</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1fp17al" sourceRef="StartEvent_1" targetRef="generate-api" />
+    <bpmn:endEvent id="EndEvent_0x6ir2l" name="Finished request">
+      <bpmn:incoming>Flow_048bzj6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_16gzt2m" sourceRef="generate-api" targetRef="call-api" />
+    <bpmn:serviceTask id="generate-api" name="Generate API delegate" camunda:delegateExpression="${generateBatchDelegate}">
+      <bpmn:extensionElements />
+      <bpmn:incoming>SequenceFlow_1fp17al</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_16gzt2m</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_048bzj6" sourceRef="user-response" targetRef="EndEvent_0x6ir2l" />
+    <bpmn:userTask id="user-response" name="Wait for response">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="createdApiCount" label="Anzahl erfolgter API Aufrufe" type="string" />
+          <camunda:formField id="savedVideos" label="Anzahl neu angelegter Videos" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_12xld7b</bpmn:incoming>
+      <bpmn:outgoing>Flow_048bzj6</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0vb4ho0" sourceRef="call-api" targetRef="Gateway_0mr40ec" />
+    <bpmn:serviceTask id="call-api" name="Call Api" camunda:delegateExpression="${createAPICallDelegate}">
+      <bpmn:incoming>SequenceFlow_16gzt2m</bpmn:incoming>
+      <bpmn:incoming>Flow_15r9ms5</bpmn:incoming>
+      <bpmn:outgoing>Flow_0vb4ho0</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_0mr40ec" name="All calls processed?">
+      <bpmn:incoming>Flow_0vb4ho0</bpmn:incoming>
+      <bpmn:outgoing>Flow_12xld7b</bpmn:outgoing>
+      <bpmn:outgoing>Flow_15r9ms5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_12xld7b" name="Yes" sourceRef="Gateway_0mr40ec" targetRef="user-response">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${allCreated}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_15r9ms5" name="No" sourceRef="Gateway_0mr40ec" targetRef="call-api">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${not allCreated}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmn:message id="Message_38lkr4m" name="Message_38lkr4m" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="video_request-loop">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="157" y="142" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1xna69d_di" bpmnElement="generate-api">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0x6ir2l_di" bpmnElement="EndEvent_0x6ir2l">
+        <dc:Bounds x="902" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="879" y="142" width="82" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0dgmcqo_di" bpmnElement="call-api">
+        <dc:Bounds x="410" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_127bsgy_di" bpmnElement="user-response">
+        <dc:Bounds x="800" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0mr40ec_di" bpmnElement="Gateway_0mr40ec" isMarkerVisible="true">
+        <dc:Bounds x="695" y="92" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="692" y="55" width="57" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1fp17al_di" bpmnElement="SequenceFlow_1fp17al">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_16gzt2m_di" bpmnElement="SequenceFlow_16gzt2m">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="410" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_048bzj6_di" bpmnElement="Flow_048bzj6">
+        <di:waypoint x="850" y="77" />
+        <di:waypoint x="850" y="57" />
+        <di:waypoint x="920" y="57" />
+        <di:waypoint x="920" y="99" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vb4ho0_di" bpmnElement="Flow_0vb4ho0">
+        <di:waypoint x="510" y="117" />
+        <di:waypoint x="695" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12xld7b_di" bpmnElement="Flow_12xld7b">
+        <di:waypoint x="745" y="117" />
+        <di:waypoint x="800" y="117" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="746" y="99" width="19" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15r9ms5_di" bpmnElement="Flow_15r9ms5">
+        <di:waypoint x="720" y="142" />
+        <di:waypoint x="720" y="250" />
+        <di:waypoint x="460" y="250" />
+        <di:waypoint x="460" y="157" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="585" y="232" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
