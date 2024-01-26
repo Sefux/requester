@@ -12,7 +12,7 @@
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1fp17al" sourceRef="StartEvent_1" targetRef="call-yt-api" />
     <bpmn:endEvent id="EndEvent_0x6ir2l" name="Finished request">
-      <bpmn:incoming>Flow_048bzj6</bpmn:incoming>
+      <bpmn:incoming>Flow_0twgofc</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_16gzt2m" sourceRef="call-yt-api" targetRef="persist_response" />
     <bpmn:serviceTask id="call-yt-api" name="Call YT API for videos">
@@ -34,12 +34,7 @@
       <bpmn:incoming>SequenceFlow_1fp17al</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_16gzt2m</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sequenceFlow id="Flow_048bzj6" sourceRef="user-response" targetRef="EndEvent_0x6ir2l" />
-    <bpmn:userTask id="user-response" name="Wait for response" camunda:formRef="finish-form" camunda:formRefBinding="deployment">
-      <bpmn:incoming>Flow_0twgofc</bpmn:incoming>
-      <bpmn:outgoing>Flow_048bzj6</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:sequenceFlow id="Flow_0twgofc" sourceRef="persist_response" targetRef="user-response" />
+    <bpmn:sequenceFlow id="Flow_0twgofc" sourceRef="persist_response" targetRef="EndEvent_0x6ir2l" />
     <bpmn:serviceTask id="persist_response" name="Persist response" camunda:delegateExpression="${videoDelegate}">
       <bpmn:incoming>SequenceFlow_16gzt2m</bpmn:incoming>
       <bpmn:outgoing>Flow_0twgofc</bpmn:outgoing>
@@ -62,9 +57,6 @@
       <bpmndi:BPMNShape id="Activity_1xna69d_di" bpmnElement="call-yt-api">
         <dc:Bounds x="270" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_127bsgy_di" bpmnElement="user-response">
-        <dc:Bounds x="600" y="77" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0k5xqgn_di" bpmnElement="persist_response">
         <dc:Bounds x="430" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
@@ -76,13 +68,9 @@
         <di:waypoint x="370" y="117" />
         <di:waypoint x="430" y="117" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_048bzj6_di" bpmnElement="Flow_048bzj6">
-        <di:waypoint x="700" y="117" />
-        <di:waypoint x="762" y="117" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0twgofc_di" bpmnElement="Flow_0twgofc">
         <di:waypoint x="530" y="117" />
-        <di:waypoint x="600" y="117" />
+        <di:waypoint x="762" y="117" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
