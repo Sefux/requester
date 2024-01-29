@@ -26,7 +26,7 @@ public class CreateAPICallDelegate implements JavaDelegate {
     @Override
     public void execute(DelegateExecution delegateExecution) throws Exception {
         Integer createdApiCount = (Integer) delegateExecution.getVariable("createdApiCount");
-        Integer batchNumber = createdApiCount++;
+        Integer batchNumber = createdApiCount;
         log.info("Created APIcall count: {} ", createdApiCount);
         log.info("Batch number: {} ", batchNumber);
         log.info("Next page number: {} ", processBatchConfig.getNextPage());
@@ -54,9 +54,10 @@ public class CreateAPICallDelegate implements JavaDelegate {
                 log.warn("[SKIPPED] Video already in database: " + videoDto.getTitle());
             }
         });
+
         processBatchConfig.setNextPage(response.getNextPageToken());
         execution.setVariable("nextPageToken", processBatchConfig.getNextPage());
         execution.setVariable("savedVideos", processBatchConfig.getSavedVideos());
-        execution.setVariable("createdApiCount", index);
+        execution.setVariable("createdApiCount", index + 1);
     }
 }
