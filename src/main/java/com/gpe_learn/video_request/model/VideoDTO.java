@@ -13,7 +13,6 @@ public class VideoDTO {
 
     private String link;
 
-    @SuppressWarnings("unchecked")
     @JsonProperty("id")
     private void unpackNestedId(Map<String, Object> id) {
         this.link = (String) id.get("videoId");
@@ -21,7 +20,6 @@ public class VideoDTO {
 
     private String title;
 
-    @SuppressWarnings("unchecked")
     @JsonProperty("snippet")
     private void unpackNestedSnippet(Map<String, Object> snippet) {
         this.title = (String) snippet.get("title");
